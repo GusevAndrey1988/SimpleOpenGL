@@ -23,6 +23,8 @@ namespace Renderer {
             bool compiled = false;
             GLuint id = 0;
 
+            static const int LOG_SIZE = 1024;
+
             bool createShader(
                 const std::string &source,
                 const GLenum shaderType,

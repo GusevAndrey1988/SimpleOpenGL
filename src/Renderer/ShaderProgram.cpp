@@ -40,11 +40,8 @@ namespace Renderer {
         GLint vertexShaderStatus = 0;
         glGetShaderiv(shaderId, GL_COMPILE_STATUS, &vertexShaderStatus);
         if (vertexShaderStatus == GL_FALSE) {
-            GLint logSize = 0;
-            glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &logSize);
-
-            GLchar errorLog[logSize];
-            glGetShaderInfoLog(shaderId, logSize, nullptr, errorLog);
+            GLchar errorLog[LOG_SIZE];
+            glGetShaderInfoLog(shaderId, LOG_SIZE, nullptr, errorLog);
 
             std::cerr << "ERROR::SHADER: Compile-time error:\n" << errorLog << std::endl;
 
@@ -71,11 +68,8 @@ namespace Renderer {
         GLint programStatus = 0;
         glGetProgramiv(id, GL_LINK_STATUS, &programStatus);
         if (programStatus == GL_FALSE) {
-            GLint logSize = 0;
-            glGetProgramiv(id, GL_INFO_LOG_LENGTH, &logSize);
-
-            char errorMessage[logSize];
-            glGetProgramInfoLog(id, logSize, &logSize, errorMessage);
+            char errorMessage[LOG_SIZE];
+            glGetProgramInfoLog(id, LOG_SIZE, nullptr, errorMessage);
 
             std::cerr << "ERROR::SHADER: Link-time error:\n" << errorMessage << std::endl;
 
