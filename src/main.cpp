@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Renderer/ShaderProgarm.h"
+#include "Resources/ResourceManager.h"
 
 GLfloat points[] = {
   0.0f, 0.5f, 0.0f,
@@ -15,31 +16,6 @@ GLfloat colors[] = {
   0.0f, 1.0f, 0.0f,
   0.0f, 0.0f, 1.0f
 };
-
-const char* vertexShaderCode = 
-  "#version 460\n"
-  "\n"
-  "layout(location = 0) in vec3 vertexPosition;\n"
-  "layout(location = 1) in vec3 vertexColor;\n"
-  "\n"
-  "out vec3 color;\n"
-  "\n"
-  "void main() {\n"
-  " color = vertexColor;\n"
-  " gl_Position = vec4(vertexPosition, 1.0);\n"
-  "}\n"
-;
-
-const char *fragmentShaderCode =
-  "#version 460\n"
-  "\n"
-  "in vec3 color;\n"
-  "out vec4 fragColor;\n"
-  "\n"
-  "void main() {\n"
-  " fragColor = vec4(color, 1.0);\n"
-  "}\n"
-;
 
 int gWindowWidth = 640;
 int gWindowHeight = 480;
@@ -56,7 +32,7 @@ void glfwKeyCallback(GLFWwindow *window, int key, int scancode, int action, int 
   }
 }
 
-int main(void) {
+int main(int argc, char *argv[]) {  
   GLFWwindow *window;
 
   if (!glfwInit()) {
@@ -90,47 +66,53 @@ int main(void) {
 
   glClearColor(1, 1, 0, 1);
 
-  std::string vertexShader(vertexShaderCode);
-  std::string fragmentShader(fragmentShaderCode);
-  Renderer::ShaderProgram shaderProgram(vertexShader, fragmentShader);
-  if (!shaderProgram.isCompiled()) {
-    std::cerr << "Can't create shader program!" << std::endl;
-  }
+  {
+    Resources::ResourceManager resourceManager(argv[0]);
+    auto defaultShaderProgram = resourceManager.loadShaders(
+      "default",
+      "res/shaders/vertex.glsl",
+      "res/shaders/fragment.glsl"
+    );
+    if (!defaultShaderProgram) {
+      std::cerr << "Can't create shader program: " << "default" << std::endl;
+      return -1;
+    }
 
-  GLuint vertexBuffer = 0;
-  glGenBuffers(1, &vertexBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+    GLuint vertexBuffer = 0;
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
 
-  GLuint colorBuffer = 0;
-  glGenBuffers(1, &colorBuffer);
-  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    GLuint colorBuffer = 0;
+    glGenBuffers(1, &colorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
 
-  GLuint vertexArray = 0;
-  glGenVertexArrays(1, &vertexArray);
-  glBindVertexArray(vertexArray);
-
-  glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-  glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
-
-  glEnableVertexAttribArray(1);
-  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-  glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
-
-  while (!glfwWindowShouldClose(window)) {
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    shaderProgram.use();
+    GLuint vertexArray = 0;
+    glGenVertexArrays(1, &vertexArray);
     glBindVertexArray(vertexArray);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glfwSwapBuffers(window);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, nullptr);
 
-    glfwPollEvents();
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+    glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, nullptr);
+
+    while (!glfwWindowShouldClose(window)) {
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      defaultShaderProgram->use();
+      glBindVertexArray(vertexArray);
+      glDrawArrays(GL_TRIANGLES, 0, 3);
+
+      glfwSwapBuffers(window);
+
+      glfwPollEvents();
+    }
   }
-
+  
   glfwTerminate();
   return 0;
 }
