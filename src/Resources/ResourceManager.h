@@ -28,6 +28,8 @@ namespace Resources {
             );
             ShaderProgramSharedPtr getShaderProgram(const std::string &shaderName);
 
+            void loadTexture(const std::string &name, const std::string &texturePath);
+
         private:
             using ShaderProgramMap = std::map<std::string, ShaderProgramSharedPtr>;
             

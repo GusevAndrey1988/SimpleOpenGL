@@ -78,6 +78,8 @@ int main(int argc, char *argv[]) {
       return -1;
     }
 
+    resourceManager.loadTexture("default", "res/textures/map_16x16.png");
+
     GLuint vertexBuffer = 0;
     glGenBuffers(1, &vertexBuffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
