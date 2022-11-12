@@ -15,6 +15,7 @@ namespace Renderer
         selectMode(channels);
 
         glGenTextures(1, &id);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, id);
         glTexImage2D(
             GL_TEXTURE_2D,
