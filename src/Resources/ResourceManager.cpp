@@ -1,5 +1,6 @@
 #include "./ResourceManager.h"
 #include "../Renderer/ShaderProgarm.h"
+#include "../Renderer/Texture2D.h"
 
 #include <sstream>
 #include <fstream>
@@ -78,7 +79,7 @@ namespace Resources {
         return nullptr;
     }
 
-    void ResourceManager::loadTexture(
+    ResourceManager::TextureSharedPtr ResourceManager::loadTexture(
         const std::string &name,
         const std::string &texturePath
     ) {
@@ -96,9 +97,32 @@ namespace Resources {
         
         if (!pixels) {
             std::cerr << "Can't load image: " << texturePath << std::endl;
-            return;
+            return nullptr;
+        }
+
+        auto emplaceResult = textureMap.emplace(
+            name, TextureSharedPtr(new Renderer::Texture2D(
+                width, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE
+            ))
+        );
+
+        if (!emplaceResult.second) {
+            std::cerr << "Can't emplace image" << std::endl;
+            return nullptr;
         }
 
         stbi_image_free(pixels);
+
+        return emplaceResult.first->second;
+    }
+
+    ResourceManager::TextureSharedPtr ResourceManager::getTexture(const std::string &name) {
+        auto textureIt = textureMap.find(name);
+        if (textureIt == textureMap.end()) {
+            std::cerr << "Can't find the texture: " << name << std::endl;
+            return nullptr;
+        }
+
+        return textureIt->second;
     }
 }

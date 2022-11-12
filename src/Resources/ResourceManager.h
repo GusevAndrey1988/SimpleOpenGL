@@ -6,12 +6,14 @@
 
 namespace Renderer {
     class ShaderProgram;
+    class Texture2D;
 }
 
 namespace Resources {
     class ResourceManager {
         public:
             using ShaderProgramSharedPtr = std::shared_ptr<Renderer::ShaderProgram>;
+            using TextureSharedPtr = std::shared_ptr<Renderer::Texture2D>;
 
             ResourceManager(const std::string &executablePath);
             ResourceManager(const ResourceManager&) = delete;
@@ -28,12 +30,15 @@ namespace Resources {
             );
             ShaderProgramSharedPtr getShaderProgram(const std::string &shaderName);
 
-            void loadTexture(const std::string &name, const std::string &texturePath);
+            TextureSharedPtr loadTexture(const std::string &name, const std::string &texturePath);
+            TextureSharedPtr getTexture(const std::string &name);
 
         private:
             using ShaderProgramMap = std::map<std::string, ShaderProgramSharedPtr>;
+            using TextureMap = std::map<std::string, TextureSharedPtr>;
             
             ShaderProgramMap shaderProgramMap;
+            TextureMap textureMap;
 
             std::string path;
 
