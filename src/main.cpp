@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 #include <iostream>
 
 #include "Renderer/ShaderProgarm.h"
@@ -24,13 +25,12 @@ GLfloat uvCoords[] = {
   0.0f, 0.0f
 };
 
-int gWindowWidth = 640;
-int gWindowHeight = 480;
+glm::ivec2 gWindowSize(640, 480);
 
 void glfwWindowSizeCallback(GLFWwindow *window, int width, int height) {
-  gWindowWidth = width;
-  gWindowHeight = height;
-  glViewport(0, 0, gWindowWidth, gWindowHeight);
+  gWindowSize.x = width;
+  gWindowSize.y = height;
+  glViewport(0, 0, gWindowSize.x, gWindowSize.y);
 }
 
 void glfwKeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode) {
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window = glfwCreateWindow(gWindowWidth, gWindowHeight, "BattleCity", nullptr, nullptr);
+  window = glfwCreateWindow(gWindowSize.x, gWindowSize.y, "BattleCity", nullptr, nullptr);
   if (!window) {
     std::cerr << "glfwCreateWindow failed!" << std::endl;
     glfwTerminate();
