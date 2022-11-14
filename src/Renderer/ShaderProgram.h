@@ -1,7 +1,9 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/mat4x4.hpp>
 #include <string>
+#include <memory>
 
 namespace Renderer {
     class ShaderProgram {
@@ -17,6 +19,7 @@ namespace Renderer {
             void use() const;
 
             void setInt(const std::string &name, GLint value);
+            void setMatrix4(const std::string &name, const glm::mat4 &matrix);
 
             ShaderProgram& operator=(ShaderProgram &&other) noexcept;
             ShaderProgram& operator=(const ShaderProgram&) = delete;
@@ -35,4 +38,6 @@ namespace Renderer {
 
             bool createProgram(GLuint vertexShaderId, GLuint fragmentShaderId);
     };
+
+    using ShaderProgramSharedPtr = std::shared_ptr<ShaderProgram>;
 }

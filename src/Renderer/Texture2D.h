@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <string>
 
+#include <memory>
+
 namespace Renderer {
     class Texture2D {
         public:
@@ -32,4 +34,6 @@ namespace Renderer {
 
             void selectMode(unsigned int channels);
     };
+
+    using Texture2DSharedPtr = std::shared_ptr<Texture2D>;
 }

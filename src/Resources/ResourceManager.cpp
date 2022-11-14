@@ -1,5 +1,5 @@
 #include "./ResourceManager.h"
-#include "../Renderer/ShaderProgarm.h"
+#include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
 
 #include <sstream>
@@ -16,7 +16,7 @@ namespace Resources {
         path = executablePath.substr(0, foundPosition);
     }
 
-    ResourceManager::ShaderProgramSharedPtr ResourceManager::loadShaders(
+    Renderer::ShaderProgramSharedPtr ResourceManager::loadShaders(
         const std::string &shaderName,
         const std::string &vertexShaderPath,
         const std::string &fragmentShaderPath
@@ -35,7 +35,7 @@ namespace Resources {
 
         auto emplaceResult = shaderProgramMap.emplace(
             shaderName,
-            ResourceManager::ShaderProgramSharedPtr(
+            Renderer::ShaderProgramSharedPtr(
                 new Renderer::ShaderProgram(
                     vertexShaderCode,
                     fragmentShaderCode
@@ -67,7 +67,7 @@ namespace Resources {
         return buffer.str();
     }
 
-    ResourceManager::ShaderProgramSharedPtr ResourceManager::getShaderProgram(
+    Renderer::ShaderProgramSharedPtr ResourceManager::getShaderProgram(
         const std::string &shaderName
     ) {
         auto it = shaderProgramMap.find(shaderName);
@@ -79,7 +79,7 @@ namespace Resources {
         return nullptr;
     }
 
-    ResourceManager::TextureSharedPtr ResourceManager::loadTexture(
+    Renderer::Texture2DSharedPtr ResourceManager::loadTexture(
         const std::string &name,
         const std::string &texturePath
     ) {
@@ -101,7 +101,7 @@ namespace Resources {
         }
 
         auto emplaceResult = textureMap.emplace(
-            name, TextureSharedPtr(new Renderer::Texture2D(
+            name, Renderer::Texture2DSharedPtr(new Renderer::Texture2D(
                 width, height, pixels, channels, GL_NEAREST, GL_CLAMP_TO_EDGE
             ))
         );
@@ -116,7 +116,7 @@ namespace Resources {
         return emplaceResult.first->second;
     }
 
-    ResourceManager::TextureSharedPtr ResourceManager::getTexture(const std::string &name) {
+    Renderer::Texture2DSharedPtr ResourceManager::getTexture(const std::string &name) {
         auto textureIt = textureMap.find(name);
         if (textureIt == textureMap.end()) {
             std::cerr << "Can't find the texture: " << name << std::endl;
