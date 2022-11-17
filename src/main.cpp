@@ -9,6 +9,7 @@
 
 #include "Renderer/ShaderProgram.h"
 #include "Renderer/Texture2D.h"
+#include "Renderer/Sprite.h"
 #include "Resources/ResourceManager.h"
 
 GLfloat points[] = {
@@ -79,7 +80,8 @@ int main(int argc, char *argv[]) {
 
   {
     Resources::ResourceManager resourceManager(argv[0]);
-    auto defaultShaderProgram = resourceManager.loadShaders(
+
+  auto defaultShaderProgram = resourceManager.loadShaders(
       "default",
       "res/shaders/vertex.glsl",
       "res/shaders/fragment.glsl"
@@ -89,8 +91,21 @@ int main(int argc, char *argv[]) {
       return -1;
     }
 
+    auto spriteShaderProgram = resourceManager.loadShaders(
+      "spriteShader",
+      "res/shaders/vSprite.glsl",
+      "res/shaders/fSprite.glsl"
+    );
+    if (!spriteShaderProgram) {
+      std::cerr << "Can't create shader program: " << "spriteShader" << std::endl;
+      return -1;
+    }
+
     auto tex = resourceManager
       .loadTexture("default", "res/textures/map_16x16.png");
+
+    auto sprite = resourceManager.loadSprite("newSprite", "default", "spriteShader", 50, 100);
+    sprite->setPosition(glm::vec2(300, 100));
 
     GLuint vertexBuffer = 0;
     glGenBuffers(1, &vertexBuffer);
@@ -143,6 +158,10 @@ int main(int argc, char *argv[]) {
 
     defaultShaderProgram->setMatrix4("projectionMatrix", projectionMatrix);
 
+    spriteShaderProgram->use();
+    spriteShaderProgram->setInt("tex", 0);
+    spriteShaderProgram->setMatrix4("projectionMatrix", projectionMatrix);
+
     while (!glfwWindowShouldClose(window)) {
       glClear(GL_COLOR_BUFFER_BIT);
 
@@ -155,6 +174,8 @@ int main(int argc, char *argv[]) {
 
       defaultShaderProgram->setMatrix4("modelMatrix", modelMatrix2);
       glDrawArrays(GL_TRIANGLES, 0, 3);
+
+      sprite->render();
 
       glfwSwapBuffers(window);
 

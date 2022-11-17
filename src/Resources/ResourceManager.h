@@ -10,6 +10,9 @@ namespace Renderer {
 
     class Texture2D;
     using Texture2DSharedPtr = std::shared_ptr<Texture2D>;
+
+    class Sprite;
+    using SpriteSharedPtr = std::shared_ptr<Sprite>;
 }
 
 namespace Resources {
@@ -33,12 +36,23 @@ namespace Resources {
             Renderer::Texture2DSharedPtr loadTexture(const std::string &name, const std::string &texturePath);
             Renderer::Texture2DSharedPtr getTexture(const std::string &name);
 
+            Renderer::SpriteSharedPtr loadSprite(
+                const std::string &name,
+                const std::string &textureName,
+                const std::string &shaderName,
+                unsigned int width,
+                unsigned int height
+            );
+            Renderer::SpriteSharedPtr getSprite(const std::string &name);
+
         private:
             using ShaderProgramMap = std::map<std::string, Renderer::ShaderProgramSharedPtr>;
             using TextureMap = std::map<std::string, Renderer::Texture2DSharedPtr>;
+            using SpriteMap = std::map<std::string, Renderer::SpriteSharedPtr>;
             
             ShaderProgramMap shaderProgramMap;
             TextureMap textureMap;
+            SpriteMap spriteMap;
 
             std::string path;
 

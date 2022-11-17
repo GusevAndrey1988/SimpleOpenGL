@@ -38,5 +38,13 @@ namespace Renderer {
             glm::vec2 position;
             glm::vec2 size;
             float angle;
+
+            GLuint vao;
+            GLuint vertexBuffer;
+            GLuint textureCoordBuffer;
+
+            void createBuffers();
     };
+
+    using SpriteSharedPtr = std::shared_ptr<Sprite>;
 }
