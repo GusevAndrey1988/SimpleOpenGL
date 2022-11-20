@@ -4,6 +4,7 @@
 #include <glm/vec2.hpp>
 
 #include <memory>
+#include <string>
 
 namespace Renderer {
     class Texture2D;
@@ -16,6 +17,7 @@ namespace Renderer {
         public:
             Sprite(
                 const Texture2DSharedPtr texture,
+                const std::string &initialSubTexture,
                 const ShaderProgramSharedPtr shaderProgram,
                 const glm::vec2 &position = glm::vec2(0.f),
                 const glm::vec2 &size = glm::vec2(1.f),
@@ -43,7 +45,7 @@ namespace Renderer {
             GLuint vertexBuffer;
             GLuint textureCoordBuffer;
 
-            void createBuffers();
+            void createBuffers(const std::string &subTextureName);
     };
 
     using SpriteSharedPtr = std::shared_ptr<Sprite>;

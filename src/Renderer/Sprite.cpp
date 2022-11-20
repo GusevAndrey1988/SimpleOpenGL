@@ -9,6 +9,7 @@
 namespace Renderer {
     Sprite::Sprite(
         const Texture2DSharedPtr _texture,
+        const std::string &initialSubTexture,
         const ShaderProgramSharedPtr _shaderProgram,
         const glm::vec2 &_position,
         const glm::vec2 &_size,
@@ -23,10 +24,10 @@ namespace Renderer {
         vertexBuffer(0),
         textureCoordBuffer(0)
     {
-        createBuffers();
+        createBuffers(initialSubTexture);
     }
 
-    void Sprite::createBuffers() {
+    void Sprite::createBuffers(const std::string &subTextureName) {
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
 
@@ -46,14 +47,16 @@ namespace Renderer {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, false, 0, nullptr);
 
-        GLfloat textureCoords[] = {
-            0.f, 0.f,
-            0.f, 1.f,
-            1.f, 1.f,
+        auto subTexture = texture->getSubTexture(subTextureName);
 
-            1.f, 1.f,
-            1.f, 0.f,
-            0.f, 0.f
+        GLfloat textureCoords[] = {
+            subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
+            subTexture.leftBottomUV.x, subTexture.rightTopUV.y,
+            subTexture.rightTopUV.x, subTexture.rightTopUV.y,
+
+            subTexture.rightTopUV.x, subTexture.rightTopUV.y,
+            subTexture.rightTopUV.x, subTexture.leftBottomUV.y,
+            subTexture.leftBottomUV.x, subTexture.leftBottomUV.y,
         };
 
         glGenBuffers(1, &textureCoordBuffer);

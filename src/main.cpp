@@ -104,7 +104,34 @@ int main(int argc, char *argv[]) {
     auto tex = resourceManager
       .loadTexture("default", "res/textures/map_16x16.png");
 
-    auto sprite = resourceManager.loadSprite("newSprite", "default", "spriteShader", 50, 100);
+    std::vector<std::string> subTexturesNames = {
+      "block",
+      "topBlock",
+      "bottomBlock",
+      "leftBlock",
+      "rightBlock",
+      "topLeftBlock",
+      "topRightBlock",
+      "bottomLeftBlock",
+      "bottomRightBlock",
+      "concrete"
+    };
+    auto textureAtlas = resourceManager.loadTextureAtlas(
+      "defaultAtlas",
+      "res/textures/map_16x16_1.png",
+      subTexturesNames,
+      16,
+      16
+    );
+
+    auto sprite = resourceManager.loadSprite(
+      "newSprite",
+      "defaultAtlas",
+      "spriteShader",
+      100,
+      100,
+      "block"
+    );
     sprite->setPosition(glm::vec2(300, 100));
 
     GLuint vertexBuffer = 0;
